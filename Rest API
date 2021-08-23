@@ -26,11 +26,11 @@ finalList={
 
 x=0
 while x<len(listWithoutEmpty):
-    blok={
+    block={
         "disabled": False,
         "value": listWithoutEmpty[x][0]
         }
-    finalList["options"].append(blok)
+    finalList["options"].append(block)
     x+=1
 
 url = "https://{Site Name}.net/rest/api/3/field/customfield_{customField ID}/context/{context ID}/option"
