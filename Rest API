@@ -1,0 +1,55 @@
+import pandas as pd
+import requests
+from requests.auth import HTTPBasicAuth
+import json
+
+dfOld = pd.read_excel (r'path\Book1.xlsx')
+listOfOldValues= dfOld.values.tolist()
+
+dfNew = pd.read_excel (r'path\Book2.xlsx')
+listOfNewValues= dfNew.values.tolist()
+
+for i in range(len(listOfNewValues)):
+    for j in range(len(listOfOldValues)):
+        if listOfNewValues[i][0]==listOfOldValues[j][0]:
+            listOfNewValues[i]=['']
+    
+listWithoutEmpty=[]
+for i in range(len(listOfNewValues)):
+    if listOfNewValues[i]!=['']:
+        listWithoutEmpty.append(listOfNewValues[i])
+
+finalList={
+  "options": [
+    ]
+}
+
+x=0
+while x<len(listWithoutEmpty):
+    blok={
+        "disabled": False,
+        "value": listWithoutEmpty[x][0]
+        }
+    finalList["options"].append(blok)
+    x+=1
+
+url = "https://{Site Name}.net/rest/api/3/field/customfield_{customField ID}/context/{context ID}/option"
+
+auth = HTTPBasicAuth("example.mail@mail.com", "{API token}")
+
+headers = {
+   "Accept": "application/json",
+   "Content-Type": "application/json"
+}
+
+payload = json.dumps(finalList)
+
+response = requests.request(
+   "POST",
+   url,
+   data=payload,
+   headers=headers,
+   auth=auth
+)
+
+print(json.dumps(json.loads(response.text), sort_keys=True, indent=4, separators=(",", ": ")))
